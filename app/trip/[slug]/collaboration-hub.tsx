@@ -147,6 +147,9 @@ function PackingBoard({
   const progress = personalItems.length
     ? Math.round((completed / personalItems.length) * 100)
     : 0;
+  const defaultCategoryId =
+    plan.packing.find((category) => category.name === "دیگر")?.id ??
+    plan.packing[0]?.id;
 
   return (
     <section
@@ -348,7 +351,7 @@ function PackingBoard({
                 name="categoryId"
                 aria-label="دسته‌بندی"
                 className="h-11 min-w-0 rounded-xl border border-black/[0.08] bg-white px-3 text-xs text-[#30344f] outline-none"
-                defaultValue={plan.packing[0]?.id}
+                defaultValue={defaultCategoryId}
               >
                 {plan.packing.map((category) => (
                   <option key={category.id} value={category.id}>
@@ -420,7 +423,7 @@ function ExpenseBoard({
         </div>
 
         <div className="grid gap-5 lg:grid-cols-[1.15fr_.85fr]">
-          <div className="space-y-5">
+          <div className="order-2 space-y-5 lg:order-1">
             <div className="grid gap-3 sm:grid-cols-3">
               {plan.balances.map((balance) => (
                 <article
@@ -547,7 +550,7 @@ function ExpenseBoard({
 
           <form
             action={createExpenseAction}
-            className="h-fit rounded-[1.75rem] border border-black/[0.07] bg-[#FAFAFC] p-6 text-[#30344f] shadow-[0_14px_40px_rgba(35,39,78,0.05)] sm:p-7"
+            className="order-1 h-fit rounded-[1.75rem] border border-black/[0.07] bg-[#FAFAFC] p-6 text-[#30344f] shadow-[0_14px_40px_rgba(35,39,78,0.05)] sm:p-7 lg:order-2"
           >
             <HiddenContext plan={plan} />
             <p className="text-xs font-semibold text-[#6B7190]">

@@ -1,8 +1,10 @@
 import { Suspense, type ComponentProps, type ReactNode } from "react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 
 import { Icon } from "@/components/icons";
+import { PwaInstallButton } from "@/components/pwa-install-button";
 import { SafeImage } from "@/components/safe-image";
 import { PushNotificationControl } from "@/components/push-notification-control";
 import { TripChrome } from "@/components/trip-chrome";
@@ -127,9 +129,13 @@ function TravelPage({
             href="#top"
             className="flex items-center gap-2 rounded-xl font-bold text-[#424874] outline-none transition-transform active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-[#424874]"
           >
-            <span className="flex size-8 items-center justify-center rounded-xl bg-[#424874] text-white">
-              <Icon name="compass" className="size-4.5" />
-            </span>
+            <Image
+              src="/pwa-icon-192.png"
+              alt=""
+              width={32}
+              height={32}
+              className="size-8 rounded-xl"
+            />
             <span className="hidden sm:inline">از کویر تا مه</span>
           </a>
           <div className="hidden items-center gap-1 text-xs font-medium text-[#6B7190] md:flex">
@@ -153,6 +159,7 @@ function TravelPage({
             </a>
           </div>
           <div className="flex items-center gap-2">
+            <PwaInstallButton />
             <PushNotificationControl />
             <form action={logoutAction}>
               <button
@@ -182,8 +189,10 @@ function TravelPage({
 
       <header id="top" className="relative min-h-[760px] bg-[#424874] text-white">
         <SafeImage
-          src={plan.heroImage}
-          alt="چشم‌انداز سرسبز مسیر سفر"
+          src={
+            plan.slug === "az-kavir-ta-meh" ? LANDING_IMAGE : plan.heroImage
+          }
+          alt="نمایی از شهر تبریز در مسیر سفر"
           fill
           preload
           sizes="100vw"

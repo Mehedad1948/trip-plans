@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { parseAsStringLiteral, useQueryState } from "nuqs";
 
 import { Icon } from "@/components/icons";
@@ -9,6 +10,7 @@ import { Icon } from "@/components/icons";
 const panels = ["chat"] as const;
 
 export function TripChrome({ chatPanel }: { chatPanel: ReactNode }) {
+  const router = useRouter();
   const [panel, setPanel] = useQueryState(
     "panel",
     parseAsStringLiteral(panels).withOptions({
@@ -22,6 +24,7 @@ export function TripChrome({ chatPanel }: { chatPanel: ReactNode }) {
 
   useEffect(() => {
     if (!chatIsOpen) return;
+    router.refresh();
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -50,7 +53,7 @@ export function TripChrome({ chatPanel }: { chatPanel: ReactNode }) {
       window.removeEventListener("keydown", handleKeyDown);
       previouslyFocused?.focus();
     };
-  }, [chatIsOpen, setPanel]);
+  }, [chatIsOpen, router, setPanel]);
 
   return (
     <>

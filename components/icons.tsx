@@ -11,6 +11,7 @@ import { ClockCircleIcon } from "@solar-icons/react/linear/clock-circle";
 import { CompassIcon } from "@solar-icons/react/linear/compass";
 import { GalleryIcon } from "@solar-icons/react/linear/gallery";
 import { HikingIcon } from "@solar-icons/react/linear/hiking";
+import { DownloadMinimalisticIcon } from "@solar-icons/react/linear/download-minimalistic";
 import { MapIcon } from "@solar-icons/react/linear/map";
 import { MapPointIcon } from "@solar-icons/react/linear/map-point";
 import { LockKeyholeIcon } from "@solar-icons/react/linear/lock-keyhole";
@@ -40,6 +41,7 @@ export type IconName =
   | "compass"
   | "food"
   | "image"
+  | "install"
   | "lock"
   | "login"
   | "logout"
@@ -69,6 +71,7 @@ const icons = {
   compass: CompassIcon,
   food: ChefHatIcon,
   image: GalleryIcon,
+  install: DownloadMinimalisticIcon,
   lock: LockKeyholeIcon,
   login: Login2Icon,
   logout: Logout2Icon,
