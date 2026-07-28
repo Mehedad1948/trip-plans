@@ -189,10 +189,8 @@ function TravelPage({
 
       <header id="top" className="relative min-h-[760px] bg-[#424874] text-white">
         <SafeImage
-          src={
-            plan.slug === "az-kavir-ta-meh" ? LANDING_IMAGE : plan.heroImage
-          }
-          alt="نمایی از شهر تبریز در مسیر سفر"
+          src={plan.heroImage}
+          alt="چشم‌انداز سرسبز مسیر سفر"
           fill
           preload
           sizes="100vw"
@@ -221,8 +219,9 @@ function TravelPage({
             <Stat icon="clock" label="زمان رانندگی">
               {plan.totalDriveDuration}
             </Stat>
-            <Stat icon="pin" label="شروع و پایان">
-              {plan.startLocation} ← {plan.endLocation}
+            <Stat icon="pin" label="مسیر آغاز سفر">
+              {routeStops[0] ?? plan.startLocation} ←{" "}
+              {routeStops[1] ?? plan.endLocation}
             </Stat>
           </div>
         </div>
