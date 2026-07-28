@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       );
     }
 
-    savePushSubscription(user.id, {
+    await savePushSubscription(user.id, {
       endpoint: body.endpoint,
       p256dh,
       auth,
@@ -88,7 +88,7 @@ export async function DELETE(request: Request) {
         { status: 400 },
       );
     }
-    removePushSubscription(user.id, body.endpoint);
+    await removePushSubscription(user.id, body.endpoint);
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json(

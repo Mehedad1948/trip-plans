@@ -27,7 +27,7 @@ export async function loginAction(
     return { error: "نام کاربری و رمز عبور را وارد کنید." };
   }
 
-  const user = authenticateUser(username, password);
+  const user = await authenticateUser(username, password);
   if (!user) return { error: "نام کاربری یا رمز عبور درست نیست." };
 
   await createUserSession(user.id);

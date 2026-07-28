@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 
 import { getDefaultTripSlug } from "@/lib/db";
 
-export default function Home() {
-  const slug = getDefaultTripSlug();
+export default async function Home() {
+  const slug = await getDefaultTripSlug();
 
   if (!slug) {
     return (
@@ -13,7 +13,8 @@ export default function Home() {
             هنوز سفری ثبت نشده است
           </h1>
           <p className="mt-3 text-sm leading-7 text-[#6B7190]">
-            برای ساخت داده اولیه، دستور npm run seed را اجرا کنید.
+            برای داده محلی npm run seed و برای Turso دستور مهاجرت پایگاه داده
+            را اجرا کنید.
           </p>
         </div>
       </main>

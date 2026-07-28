@@ -34,7 +34,7 @@ function tripSlug(formData: FormData) {
 async function authenticatedMember(slug: string) {
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trip/${slug}`)}`);
-  const member = getTripMemberForUser(slug, user.id);
+  const member = await getTripMemberForUser(slug, user.id);
   if (!member) throw new Error("شما عضو این سفر نیستید.");
   return member;
 }
@@ -57,7 +57,7 @@ async function notifyTrip(
 export async function togglePackingAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  togglePackingItem(
+  await togglePackingItem(
     slug,
     member.id,
     numberValue(formData, "itemId"),
@@ -68,7 +68,7 @@ export async function togglePackingAction(formData: FormData) {
 export async function createPackingAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  createPackingItem({
+  await createPackingItem({
     tripSlug: slug,
     editorMemberId: member.id,
     categoryId: numberValue(formData, "categoryId"),
@@ -81,7 +81,7 @@ export async function createPackingAction(formData: FormData) {
 export async function updatePackingAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  updatePackingItem({
+  await updatePackingItem({
     tripSlug: slug,
     editorMemberId: member.id,
     itemId: numberValue(formData, "itemId"),
@@ -95,7 +95,7 @@ export async function updatePackingAction(formData: FormData) {
 export async function deletePackingAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  deletePackingItem(
+  await deletePackingItem(
     slug,
     member.id,
     numberValue(formData, "itemId"),
@@ -106,7 +106,7 @@ export async function deletePackingAction(formData: FormData) {
 export async function createMessageAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  const body = createMessage(
+  const body = await createMessage(
     slug,
     member.id,
     stringValue(formData, "body"),
@@ -129,7 +129,7 @@ export async function createMessageAction(formData: FormData) {
 export async function createExpenseAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  const expense = createExpense({
+  const expense = await createExpense({
     tripSlug: slug,
     recorderMemberId: member.id,
     payerMemberId: numberValue(formData, "payerMemberId"),
@@ -154,7 +154,7 @@ export async function createExpenseAction(formData: FormData) {
 export async function deleteExpenseAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  deleteExpense(
+  await deleteExpense(
     slug,
     member.id,
     numberValue(formData, "expenseId"),

@@ -20,7 +20,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const plan = loadPlanSafely(slug);
+  const plan = await loadPlanSafely(slug);
 
   if (!plan) {
     return { title: "سفر پیدا نشد" };
@@ -565,9 +565,9 @@ function TravelPage({
   );
 }
 
-function loadPlanSafely(slug: string) {
+async function loadPlanSafely(slug: string) {
   try {
-    return getTripPlanBySlug(slug);
+    return await getTripPlanBySlug(slug);
   } catch (error) {
     console.error("Could not load the travel plan.", error);
     return null;
@@ -585,9 +585,9 @@ export default async function TripPage({
     redirect(`/login?next=${encodeURIComponent(`/trip/${slug}`)}`);
   }
 
-  const plan = loadPlanSafely(slug);
+  const plan = await loadPlanSafely(slug);
   if (!plan) notFound();
-  const activeMember = getTripMemberForUser(slug, user.id);
+  const activeMember = await getTripMemberForUser(slug, user.id);
 
   if (!activeMember) notFound();
   return <TravelPage plan={plan} activeMember={activeMember} />;

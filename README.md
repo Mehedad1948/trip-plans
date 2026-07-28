@@ -1,16 +1,17 @@
-# برنامه سفر «از کویر تا مه»
+# From Desert to Mist
 
-یک برنامه فارسی، راست‌به‌چپ و واکنش‌گرا برای مدیریت سفر گروهی. برنامه روزها،
-دیدنی‌ها، وسایل هر هم‌سفر، گفت‌وگوی گروهی، هزینه‌ها و تسویه‌حساب از SQLite
-خوانده می‌شوند. نسخه وب به‌صورت PWA نصب می‌شود و برای پیام‌ها و هزینه‌های تازه
-Web Push بومی می‌فرستد.
+A Persian, RTL, mobile-first group travel planner built with Next.js 16. It
+includes the itinerary, attractions, per-member packing, group chat, shared
+expenses, settlements, authentication, PWA installation, and Web Push
+notifications.
 
-## پیش‌نیاز
+## Requirements
 
-- Node.js 22.5 یا جدیدتر؛ پروژه از `node:sqlite` استفاده می‌کند.
+- Node.js 22.5 or newer when using the local `node:sqlite` seed script
 - npm
+- A Turso database for Vercel or other serverless deployments
 
-## نصب و اجرا
+## Local setup
 
 ```bash
 npm install
@@ -18,45 +19,85 @@ npm run seed
 npm run dev
 ```
 
-سپس `http://localhost:3000` را باز کنید. مسیر سفر فعلی:
+Open `http://localhost:3000`. The current trip is available at:
 
 ```text
 /trip/az-kavir-ta-meh
 ```
 
-## حساب‌های اولیه
+If `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are configured, the application
+uses Turso. Without them, the runtime falls back to `data/trip.db`.
 
-| نام کاربری | نام نمایشی | رمز موقت |
+## Initial accounts
+
+| Username | Display name | Temporary password |
 | --- | --- | --- |
 | `mehrdad` | Mehrdad | `123456` |
 | `amir-mohammad` | Amir Mohammad | `123456` |
 | `ali` | Ali | `123456` |
 
-رمزها با `scrypt` هش می‌شوند. نشست ورود با یک token تصادفی، رکورد قابل ابطال
-در SQLite و cookie امن `HttpOnly` مدیریت می‌شود. رمزهای اولیه را پیش از
-استفاده عمومی تغییر دهید.
+Passwords are hashed with `scrypt`. Login sessions use random tokens, hashed
+session records in the database, and secure `HttpOnly` cookies. Change the
+temporary passwords before exposing the application publicly.
 
-## پایگاه داده و seed
+## Database architecture
 
-داده منبع در [`data/trip.json`](data/trip.json) است. `npm run seed` فایل
-`data/trip.db` را می‌سازد، جداول را از نو ایجاد می‌کند و کاربران، عضویت سفر،
-روزها، مکان‌ها، وسایل، پیام‌ها، هزینه‌ها و اشتراک‌های Push را وارد می‌کند.
-اجرای دوباره seed داده‌های قابل ویرایش فعلی را پاک می‌کند.
+The runtime uses `@libsql/client` for both Turso and local SQLite:
 
-فایل SQLite در Git نادیده گرفته شده است. جدول `push_subscriptions` در اجرای
-برنامه نیز با `CREATE TABLE IF NOT EXISTS` ایجاد می‌شود تا ارتقای دیتابیس موجود
-بدون پاک شدن اطلاعات ممکن باشد.
+```dotenv
+TURSO_DATABASE_URL=libsql://your-database.turso.io
+TURSO_AUTH_TOKEN=your-private-token
+```
 
-## PWA و اعلان‌های بومی
+All server components, authentication queries, mutations, expense transactions,
+chat messages, packing updates, sessions, and push subscriptions use the same
+asynchronous data access layer.
 
-یک بار کلیدهای VAPID را بسازید:
+`npm run seed` resets only the local `data/trip.db` file from
+[`data/trip.json`](data/trip.json). It does not reset Turso.
+
+### Check Turso connectivity
+
+```bash
+npm run db:check
+```
+
+This verifies credentials and reports non-sensitive table counts.
+
+### Import the local database into Turso
+
+```bash
+npm run db:migrate:turso -- --force
+```
+
+This is intentionally explicit and destructive for the remote target. It:
+
+1. Connects to the Turso database configured in the environment.
+2. Replaces its application schema.
+3. Copies the current local users, trip, sessions, packing, messages, expenses,
+   and push subscriptions while preserving IDs and timestamps.
+4. Verifies every table count after import.
+
+Do not add this command to the Vercel build command.
+
+### Test remote transactions
+
+```bash
+npm run db:smoke
+```
+
+The smoke test reads the trip, performs a temporary remote write inside a
+transaction, rolls it back, and verifies that no test data remains.
+
+## PWA and Web Push
+
+Generate VAPID keys once:
 
 ```bash
 npm run push:keys
 ```
 
-خروجی را در `.env.local` برای محیط محلی و در Environment Variables میزبان برای
-محیط production قرار دهید:
+Configure:
 
 ```dotenv
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=...
@@ -64,55 +105,75 @@ VAPID_PRIVATE_KEY=...
 VAPID_SUBJECT=mailto:your-real-email@example.com
 ```
 
-بعد از تغییر `NEXT_PUBLIC_VAPID_PUBLIC_KEY` سرور را دوباره اجرا کنید. دکمه زنگ
-در نوار بالای سفر، اعلان پیام‌ها و هزینه‌ها را برای حساب فعال روشن یا خاموش
-می‌کند. هر endpoint فقط به آخرین حسابی که روی همان مرورگر وارد شده متصل می‌شود.
+Do not regenerate VAPID keys on every deployment. Existing subscriptions are
+tied to the public key. The notification button in the trip navigation enables
+message and expense notifications for the active account.
 
-Web Push به HTTPS نیاز دارد. `localhost` در مرورگرهای مدرن secure context محسوب
-می‌شود؛ برای آزمایش روی تلفن یا شبکه محلی از HTTPS استفاده کنید. در iPhone و
-iPad (iOS/iPadOS 16.4 به بعد)، سایت باید ابتدا با «Add to Home Screen» نصب و
-از آیکن نصب‌شده باز شود تا درخواست اعلان کار کند.
+Web Push requires HTTPS. Vercel supplies HTTPS automatically. On iOS/iPadOS
+16.4 or newer, users must first add the PWA to their Home Screen and open the
+installed application before enabling notifications.
 
-Service worker عمداً صفحات احراز‌شده، پاسخ‌های RSC و API را cache نمی‌کند تا
-اطلاعات یک حساب روی دستگاه مشترک به حساب بعدی نمایش داده نشود. فقط پوسته آفلاین،
-manifest، آیکن‌ها و فایل‌های static کش می‌شوند.
+The service worker does not cache authenticated pages, RSC responses, or APIs.
+It only caches the offline shell, manifest, icons, and static assets.
 
-## استقرار و SQLite
+## Vercel deployment
 
-SQLite محلی روی یک سرور Node دائمی یا VPS کار می‌کند، اما filesystem توابع
-Serverless در Vercel پایدار نیست. برای استقرار واقعی روی Vercel، داده‌های
-برنامه و جدول `push_subscriptions` باید به یک دیتابیس پایدار مانند Turso/LibSQL
-یا یک سرویس SQLite سازگار منتقل شوند. بدون این مهاجرت، عضویت اعلان‌ها، پیام‌ها
-و هزینه‌های تازه ممکن است بین اجراهای Vercel از بین بروند.
+In Vercel, open **Project → Settings → Environment Variables** and add the
+following to Production:
 
-همچنین سه متغیر VAPID بالا باید در هر دو محیط Preview و Production تنظیم شوند.
-کلید private را فقط سمت سرور نگه دارید و هرگز با پیشوند `NEXT_PUBLIC_` منتشر
-نکنید.
-
-## دستورها
-
-```bash
-npm run dev        # محیط توسعه
-npm run seed       # ساخت یا بازنشانی SQLite
-npm run push:keys  # تولید یک جفت کلید VAPID
-npm run lint       # ESLint
-npm run build      # build production
-npm start          # اجرای build
+```dotenv
+TURSO_DATABASE_URL=libsql://...
+TURSO_AUTH_TOKEN=...
+NEXT_PUBLIC_VAPID_PUBLIC_KEY=...
+VAPID_PRIVATE_KEY=...
+VAPID_SUBJECT=mailto:...
 ```
 
-## معماری
+Mark `TURSO_AUTH_TOKEN` and `VAPID_PRIVATE_KEY` as sensitive. Configure the same
+variable names for Preview, preferably using a separate preview Turso database.
 
-- Next.js 16 App Router و React Server Components
-- Tailwind CSS 4 و فونت فارسی Vazirmatn
-- SQLite داخلی Node.js، بدون سرویس خارجی در محیط محلی
-- مسیر مستقل هر سفر با `/trip/[slug]`
-- کاربران مستقل و عضویت چندبه‌چند با `users` و `trip_members`
-- احراز هویت username/password و نشست‌های قابل ابطال
-- وسایل قابل ویرایش و وضعیت آماده‌سازی برای هر عضو
-- گفت‌وگوی overlay با `nuqs` و `?panel=chat`
-- هزینه، پرداخت‌کننده، ثبت‌کننده، شرکا، سهم دقیق و پیشنهاد تسویه
-- Web App Manifest، service worker، fallback آفلاین و Web Push مبتنی بر VAPID
+Keep the standard Vercel commands:
 
-تمام mutationها هویت و عضویت را سمت سرور کنترل می‌کنند. شناسه کاربر از فرم
-پذیرفته نمی‌شود؛ با این حال یک عضو می‌تواند هزینه‌ای را به نام پرداخت‌کننده
-دیگری ثبت کند و نام ثبت‌کننده برای حسابرسی حفظ می‌شود.
+```text
+Install command: npm install
+Build command:   npm run build
+```
+
+Do not run `npm run seed` or `db:migrate:turso` during deployment. After adding
+or changing environment variables, redeploy because `NEXT_PUBLIC_*` values are
+embedded during the build.
+
+The configured Turso database is in AWS Mumbai. In Vercel
+**Settings → Functions**, choose the closest available function region to that
+database and redeploy.
+
+## Commands
+
+```bash
+npm run dev                     # Development server
+npm run seed                    # Reset local SQLite from JSON
+npm run db:check                # Check Turso connectivity
+npm run db:migrate:turso -- --force # Replace/import the remote database
+npm run db:smoke                # Verify remote transaction behavior
+npm run push:keys               # Generate VAPID keys
+npm run lint                    # ESLint
+npm run build                   # Production build
+npm start                       # Run the production build
+```
+
+## Architecture
+
+- Next.js 16 App Router and React Server Components
+- Tailwind CSS 4 and the Vazirmatn Persian font
+- Turso/libSQL in production with local SQLite fallback
+- Extensible `/trip/[slug]` routes
+- Many-to-many `users` and `trip_members`
+- Server-side username/password authentication and revocable sessions
+- Editable, per-member packing responsibilities
+- Chat overlay controlled by `nuqs`
+- Shared expenses with payer, recorder, participants, exact shares, and
+  settlement suggestions
+- Web App Manifest, service worker, offline fallback, and VAPID Web Push
+
+All mutations re-check authentication and trip membership on the server. User
+identity is never accepted from a form field.
