@@ -2,15 +2,18 @@
   "users": [
     {
       "slug": "mehrdad",
-      "name": "Mehrdad"
+      "name": "Mehrdad",
+      "username": "mehrdad"
     },
     {
       "slug": "amir-mohammad",
-      "name": "Amir Mohammad"
+      "name": "Amir Mohammad",
+      "username": "amir-mohammad"
     },
     {
       "slug": "ali",
-      "name": "Ali"
+      "name": "Ali",
+      "username": "ali"
     }
   ],
   "trip": {
@@ -515,6 +518,10 @@
           "assignedTo": "amir-mohammad"
         }
       ]
+    },
+    {
+      "category": "دیگر",
+      "items": []
     }
   ],
   "safety": [
