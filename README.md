@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# برنامه سفر «از کویر تا مه»
 
-## Getting Started
+یک راهنمای تک‌صفحه‌ای، فارسی و واکنش‌گرا برای سفر پنج‌روزه کاشان تا شمال‌غرب
+ایران. برنامه روزها، جاذبه‌ها، پیشنهادهای غذایی، چک‌لیست وسایل و نکات ایمنی از
+یک پایگاه داده محلی SQLite خوانده می‌شوند.
 
-First, run the development server:
+## پیش‌نیاز
+
+- Node.js 22.5 یا جدیدتر (پروژه از ماژول داخلی `node:sqlite` استفاده می‌کند)
+- npm
+
+## نصب و اجرا
 
 ```bash
+npm install
+npm run seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+سپس `http://localhost:3000` را باز کنید.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## پایگاه داده
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+داده منبع در [`data/trip.json`](data/trip.json) قرار دارد. دستور `npm run seed`:
 
-## Learn More
+1. فایل `data/trip.db` را در صورت نیاز ایجاد می‌کند؛
+2. جدول‌ها و ارتباط‌ها را می‌سازد؛
+3. داده قبلی را در یک تراکنش پاک می‌کند؛
+4. سفر، روزها، فعالیت‌ها، مکان‌ها، تصاویر، غذاها، وسایل و نکات ایمنی را وارد
+   می‌کند.
 
-To learn more about Next.js, take a look at the following resources:
+فایل پایگاه داده تولیدی در Git نادیده گرفته می‌شود. بعد از هر تغییر در JSON،
+دستور seed را دوباره اجرا کنید.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## دستورها
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev     # محیط توسعه
+npm run seed    # ساخت یا بازنشانی SQLite
+npm run lint    # بررسی ESLint
+npm run build   # ساخت production
+npm start       # اجرای خروجی production
+```
 
-## Deploy on Vercel
+## معماری
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Next.js 16 App Router و React Server Components
+- Tailwind CSS 4
+- SQLite داخلی Node.js؛ بدون سرویس یا حساب خارجی
+- یک Client Component کوچک برای چک‌لیست و یک wrapper برای fallback تصاویر
+- لینک مستقیم Google Maps؛ بدون API key
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+برای ساخت production باید `npm run seed` پیش از `npm run build` اجرا شده باشد.
