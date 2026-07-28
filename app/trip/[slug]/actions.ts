@@ -13,6 +13,7 @@ import {
   togglePackingItem,
   updatePackingItem,
 } from "@/lib/mutations";
+import { sendTripPushNotifications } from "@/lib/push";
 
 function stringValue(formData: FormData, key: string) {
   return String(formData.get(key) ?? "");
@@ -41,6 +42,16 @@ async function authenticatedMember(slug: string) {
 function finish(slug: string, anchor: string) {
   revalidatePath(`/trip/${slug}`);
   redirect(`/trip/${slug}#${anchor}`);
+}
+
+async function notifyTrip(
+  payload: Parameters<typeof sendTripPushNotifications>[0],
+) {
+  try {
+    await sendTripPushNotifications(payload);
+  } catch (error) {
+    console.error("Could not send trip push notifications.", error);
+  }
 }
 
 export async function togglePackingAction(formData: FormData) {
@@ -95,11 +106,19 @@ export async function deletePackingAction(formData: FormData) {
 export async function createMessageAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  createMessage(
+  const body = createMessage(
     slug,
     member.id,
     stringValue(formData, "body"),
   );
+  await notifyTrip({
+    tripSlug: slug,
+    excludeMemberId: member.id,
+    title: "پیام جدید سفر",
+    body: `${member.displayName}: ${body.slice(0, 140)}`,
+    url: `/trip/${slug}?panel=chat`,
+    tag: `trip-${slug}-messages`,
+  });
   if (stringValue(formData, "view") === "overlay") {
     revalidatePath(`/trip/${slug}`);
     redirect(`/trip/${slug}?panel=chat`);
@@ -110,7 +129,7 @@ export async function createMessageAction(formData: FormData) {
 export async function createExpenseAction(formData: FormData) {
   const slug = tripSlug(formData);
   const member = await authenticatedMember(slug);
-  createExpense({
+  const expense = createExpense({
     tripSlug: slug,
     recorderMemberId: member.id,
     payerMemberId: numberValue(formData, "payerMemberId"),
@@ -120,6 +139,14 @@ export async function createExpenseAction(formData: FormData) {
       .getAll("participantMemberIds")
       .map(Number)
       .filter(Number.isSafeInteger),
+  });
+  await notifyTrip({
+    tripSlug: slug,
+    excludeMemberId: member.id,
+    title: "هزینه جدید سفر",
+    body: `${member.displayName} هزینه «${expense.description}» را ثبت کرد.`,
+    url: `/trip/${slug}#expenses`,
+    tag: `trip-${slug}-expenses`,
   });
   finish(slug, "expenses");
 }

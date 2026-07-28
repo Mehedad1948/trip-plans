@@ -180,6 +180,7 @@ export function createMessage(
     db.prepare(
       "INSERT INTO messages (trip_id, author_member_id, body) VALUES (?, ?, ?)",
     ).run(tripId, authorMemberId, body);
+    return body;
   } finally {
     db.close();
   }
@@ -239,6 +240,7 @@ export function createExpense(input: {
         insertShare.run(expenseId, memberId, share);
       });
       db.exec("COMMIT");
+      return { description, amount };
     } catch (error) {
       db.exec("ROLLBACK");
       throw error;

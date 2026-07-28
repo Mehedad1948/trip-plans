@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { Icon } from "@/components/icons";
 import { SafeImage } from "@/components/safe-image";
+import { PushNotificationControl } from "@/components/push-notification-control";
 import { TripChrome } from "@/components/trip-chrome";
 import { getCurrentUser, getTripMemberForUser } from "@/lib/auth";
 import { getTripPlanBySlug } from "@/lib/db";
@@ -132,16 +133,19 @@ function TravelPage({
               ایمنی
             </a>
           </div>
-          <form action={logoutAction}>
-            <button
-              type="submit"
-              className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#424874] px-3 text-xs font-semibold text-white outline-none transition-transform active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-[#424874] focus-visible:ring-offset-2"
-              title={`خروج از حساب ${activeMember.displayName}`}
-            >
-              <span className="hidden sm:inline">{activeMember.displayName}</span>
-              <Icon name="logout" className="size-4" />
-            </button>
-          </form>
+          <div className="flex items-center gap-2">
+            <PushNotificationControl />
+            <form action={logoutAction}>
+              <button
+                type="submit"
+                className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#424874] px-3 text-xs font-semibold text-white outline-none transition-transform active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-[#424874] focus-visible:ring-offset-2"
+                title={`خروج از حساب ${activeMember.displayName}`}
+              >
+                <span className="hidden sm:inline">{activeMember.displayName}</span>
+                <Icon name="logout" className="size-4" />
+              </button>
+            </form>
+          </div>
         </div>
       </nav>
 

@@ -32,6 +32,7 @@ const db = new DatabaseSync(databasePath);
 
 db.exec(`
   PRAGMA foreign_keys = OFF;
+  DROP TABLE IF EXISTS push_subscriptions;
   DROP TABLE IF EXISTS sessions;
   DROP TABLE IF EXISTS expense_participants;
   DROP TABLE IF EXISTS expenses;
@@ -67,6 +68,16 @@ db.exec(`
     token_hash TEXT NOT NULL UNIQUE,
     expires_at TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE push_subscriptions (
+    id INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    endpoint TEXT NOT NULL UNIQUE,
+    p256dh TEXT NOT NULL,
+    auth TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
   );
 
   CREATE TABLE trips (
@@ -209,6 +220,7 @@ db.exec(`
 
   CREATE INDEX idx_trip_members_trip ON trip_members(trip_id);
   CREATE INDEX idx_sessions_token ON sessions(token_hash, expires_at);
+  CREATE INDEX idx_push_subscriptions_user ON push_subscriptions(user_id);
   CREATE INDEX idx_days_trip ON days(trip_id, day_number);
   CREATE INDEX idx_activities_day ON activities(day_id, sort_order);
   CREATE INDEX idx_locations_trip ON locations(trip_id);

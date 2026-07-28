@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { ServiceWorkerRegistrar } from "@/components/service-worker-registrar";
 import "@fontsource-variable/vazirmatn";
 import "./globals.css";
 
@@ -8,6 +9,19 @@ export const metadata: Metadata = {
   description:
     "برنامه کامل سفر پنج‌روزه جاده‌ای از کاشان به تبریز، اردبیل، سرعین و جاده اسالم.",
   keywords: ["سفر ایران", "تبریز", "اردبیل", "جاده اسالم", "برنامه سفر"],
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "از کویر تا مه",
+  },
+  icons: {
+    apple: "/pwa-icon-192.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#424874",
 };
 
 export default function RootLayout({
@@ -19,6 +33,7 @@ export default function RootLayout({
     <html lang="fa" dir="rtl" className="scroll-smooth">
       <body>
         <NuqsAdapter>{children}</NuqsAdapter>
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 import { AltArrowLeftIcon } from "@solar-icons/react/linear/alt-arrow-left";
 import { BackpackIcon } from "@solar-icons/react/linear/backpack";
+import { BellIcon } from "@solar-icons/react/linear/bell";
+import { BellOffIcon } from "@solar-icons/react/linear/bell-off";
 import { CalendarIcon } from "@solar-icons/react/linear/calendar";
 import { ChatRoundDotsIcon } from "@solar-icons/react/linear/chat-round-dots";
 import { CheckReadIcon } from "@solar-icons/react/linear/check-read";
@@ -26,6 +28,8 @@ import { WheelIcon } from "@solar-icons/react/linear/wheel";
 export type IconName =
   | "arrow"
   | "bag"
+  | "bell"
+  | "bellOff"
   | "calendar"
   | "car"
   | "chat"
@@ -52,6 +56,8 @@ export type IconName =
 const icons = {
   arrow: AltArrowLeftIcon,
   bag: BackpackIcon,
+  bell: BellIcon,
+  bellOff: BellOffIcon,
   calendar: CalendarIcon,
   car: WheelIcon,
   chat: ChatRoundDotsIcon,
