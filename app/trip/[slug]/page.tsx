@@ -8,6 +8,7 @@ import { PushNotificationControl } from "@/components/push-notification-control"
 import { TripChrome } from "@/components/trip-chrome";
 import { getCurrentUser, getTripMemberForUser } from "@/lib/auth";
 import { getTripPlanBySlug } from "@/lib/db";
+import { LANDING_IMAGE } from "@/lib/site-config";
 import type { TripMember, TripPlan } from "@/lib/types";
 import { logoutAction } from "@/app/login/actions";
 import { ChatPanel, CollaborationHub } from "./collaboration-hub";
@@ -36,8 +37,8 @@ export async function generateMetadata({
       description: plan.description,
       images: [
         {
-          url: plan.heroImage,
-          alt: `تصویر سفر ${plan.title}`,
+          url: LANDING_IMAGE,
+          alt: "نمایی از شهر تبریز",
         },
       ],
     },
@@ -45,7 +46,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: plan.title,
       description: plan.description,
-      images: [plan.heroImage],
+      images: [LANDING_IMAGE],
     },
   };
 }

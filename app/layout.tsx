@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: [{ url: LANDING_IMAGE, alt: "سفر جاده‌ای از کویر تا شمال‌غرب ایران" }],
+    images: [{ url: LANDING_IMAGE, alt: "نمایی از شهر تبریز" }],
   },
   twitter: {
     card: "summary_large_image",

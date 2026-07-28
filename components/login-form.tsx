@@ -25,7 +25,6 @@ export function LoginForm({ destination }: { destination: string }) {
           required
           className="h-12 w-full rounded-2xl border border-[#DCD6F7] bg-[#F4EEFF] px-4 text-left text-sm text-[#424874] outline-none transition-shadow focus:border-[#A6B1E1] focus:ring-4 focus:ring-[#DCD6F7]/70"
           dir="ltr"
-          placeholder="mehrdad"
         />
       </label>
       <label className="block text-right">
