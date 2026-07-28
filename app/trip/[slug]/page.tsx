@@ -29,6 +29,24 @@ export async function generateMetadata({
   return {
     title: `${plan.title} | برنامه سفر گروهی`,
     description: plan.description,
+    openGraph: {
+      type: "website",
+      locale: "fa_IR",
+      title: plan.title,
+      description: plan.description,
+      images: [
+        {
+          url: plan.heroImage,
+          alt: `تصویر سفر ${plan.title}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: plan.title,
+      description: plan.description,
+      images: [plan.heroImage],
+    },
   };
 }
 
@@ -175,12 +193,6 @@ function TravelPage({
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(26,29,58,.4),rgba(26,29,58,.22)),linear-gradient(0deg,rgba(26,29,58,.96)_0%,rgba(26,29,58,.58)_50%,rgba(26,29,58,.22)_100%)]" />
         <div className="relative mx-auto flex min-h-[760px] max-w-7xl flex-col justify-end px-5 pb-10 pt-28 sm:px-8 sm:pb-14 lg:px-10">
           <div className="max-w-4xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-2 text-xs font-medium text-white/85 ring-1 ring-inset ring-white/15 backdrop-blur-md">
-              <Icon name="spark" className="size-4 text-[#A6B1E1]" />
-              {plan.metadata.travelStyle ?? "سفر جاده‌ای"}
-              <span className="size-1 rounded-full bg-white/40" />
-              {plan.bestSeason}
-            </div>
             <h1 className="max-w-3xl text-[clamp(2.8rem,8vw,6.7rem)] font-bold leading-[1.08] tracking-[-0.055em] text-balance">
               {plan.title}
             </h1>
@@ -355,7 +367,7 @@ function TravelPage({
           <SectionHeading
             eyebrow="توقف‌های ماندگار"
             title="دیدنی‌های مسیر"
-            description="مختصات هر مکان آماده است؛ بدون کلید API، مستقیم در Google Maps بازش کنید."
+            description=""
             icon="mountain"
           />
 

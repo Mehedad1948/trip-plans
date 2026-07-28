@@ -1,16 +1,21 @@
 import type { MetadataRoute } from "next";
 
+import {
+  PRIMARY_COLOR,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+} from "@/lib/site-config";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "از کویر تا مه | برنامه سفر گروهی",
-    short_name: "از کویر تا مه",
-    description:
-      "برنامه سفر گروهی، گفتگو، وسایل و تسویه هزینه‌های سفر شمال‌غرب ایران.",
+    name: `${SITE_NAME} | برنامه سفر گروهی`,
+    short_name: SITE_NAME,
+    description: SITE_DESCRIPTION,
     start_url: "/",
     scope: "/",
     display: "standalone",
     background_color: "#FFFFFF",
-    theme_color: "#424874",
+    theme_color: PRIMARY_COLOR,
     lang: "fa",
     dir: "rtl",
     orientation: "portrait-primary",

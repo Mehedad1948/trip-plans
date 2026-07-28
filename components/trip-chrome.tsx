@@ -98,11 +98,11 @@ export function TripChrome({ chatPanel }: { chatPanel: ReactNode }) {
             type="button"
             aria-label="بستن گفتگو"
             onClick={() => setPanel(null)}
-            className="absolute inset-0 cursor-default bg-[#181a2e]/30 backdrop-blur-[2px] animate-[scrim-in_180ms_ease-out]"
+            className="chat-overlay-scrim absolute inset-0 cursor-default bg-[#181a2e]/30 backdrop-blur-[2px]"
           />
           <section
             ref={dialogRef}
-            className="absolute inset-0 flex min-h-0 flex-col bg-white p-4 animate-[sheet-in_240ms_cubic-bezier(.22,1,.36,1)] sm:bottom-4 sm:left-4 sm:right-auto sm:top-4 sm:w-[min(28rem,calc(100vw-2rem))] sm:rounded-[2rem] sm:p-3 sm:shadow-[0_30px_90px_rgba(20,23,48,.22)]"
+            className="chat-overlay-panel absolute inset-0 flex min-h-0 flex-col bg-white p-4 sm:bottom-4 sm:left-4 sm:right-auto sm:top-4 sm:w-[min(28rem,calc(100vw-2rem))] sm:rounded-[2rem] sm:p-3 sm:shadow-[0_30px_90px_rgba(20,23,48,.22)]"
           >
             <header className="flex h-12 shrink-0 items-center justify-between px-2">
               <div>
@@ -126,7 +126,9 @@ export function TripChrome({ chatPanel }: { chatPanel: ReactNode }) {
                 <Icon name="close" className="size-5" />
               </button>
             </header>
-            <div className="min-h-0 flex-1">{chatPanel}</div>
+            <div className="chat-overlay-content min-h-0 flex-1">
+              {chatPanel}
+            </div>
           </section>
         </div>
       )}

@@ -21,6 +21,7 @@ import { PlaneIcon } from "@solar-icons/react/linear/plane";
 import { RoutingIcon } from "@solar-icons/react/linear/routing";
 import { ShieldCheckIcon } from "@solar-icons/react/linear/shield-check";
 import { StarsMinimalisticIcon } from "@solar-icons/react/linear/stars-minimalistic";
+import { TrashBinMinimalisticIcon } from "@solar-icons/react/linear/trash-bin-minimalistic";
 import { UsersGroupRoundedIcon } from "@solar-icons/react/linear/users-group-rounded";
 import { WalletMoneyIcon } from "@solar-icons/react/linear/wallet-money";
 import { WheelIcon } from "@solar-icons/react/linear/wheel";
@@ -50,6 +51,7 @@ export type IconName =
   | "send"
   | "shield"
   | "spark"
+  | "trash"
   | "users"
   | "wallet";
 
@@ -78,6 +80,7 @@ const icons = {
   send: PlaneIcon,
   shield: ShieldCheckIcon,
   spark: StarsMinimalisticIcon,
+  trash: TrashBinMinimalisticIcon,
   users: UsersGroupRoundedIcon,
   wallet: WalletMoneyIcon,
 } satisfies Record<IconName, typeof CompassIcon>;

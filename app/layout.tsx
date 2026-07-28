@@ -1,19 +1,42 @@
 import type { Metadata, Viewport } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ServiceWorkerRegistrar } from "@/components/service-worker-registrar";
+import {
+  LANDING_IMAGE,
+  PRIMARY_COLOR,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/lib/site-config";
 import "@fontsource-variable/vazirmatn";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "از کویر تا مه | برنامه سفر شمال‌غرب ایران",
-  description:
-    "برنامه کامل سفر پنج‌روزه جاده‌ای از کاشان به تبریز، اردبیل، سرعین و جاده اسالم.",
+  metadataBase: SITE_URL,
+  applicationName: SITE_NAME,
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   keywords: ["سفر ایران", "تبریز", "اردبیل", "جاده اسالم", "برنامه سفر"],
   manifest: "/manifest.webmanifest",
+  openGraph: {
+    type: "website",
+    locale: "fa_IR",
+    siteName: SITE_NAME,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [{ url: LANDING_IMAGE, alt: "سفر جاده‌ای از کویر تا شمال‌غرب ایران" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [LANDING_IMAGE],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "از کویر تا مه",
+    title: SITE_NAME,
   },
   icons: {
     apple: "/pwa-icon-192.png",
@@ -21,7 +44,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#424874",
+  colorScheme: "light",
+  themeColor: PRIMARY_COLOR,
 };
 
 export default function RootLayout({

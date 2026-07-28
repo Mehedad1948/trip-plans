@@ -39,11 +39,6 @@ export default async function LoginPage({
           </p>
         </div>
         <LoginForm destination={destination} />
-        <p className="mt-6 rounded-2xl bg-[#F4EEFF] px-4 py-3 text-center text-[11px] leading-6 text-[#6B7190]">
-          حساب‌های اولیه: mehrdad، amir-mohammad و ali
-          <br />
-          رمز موقت همه حساب‌ها: <strong dir="ltr">123456</strong>
-        </p>
       </section>
     </main>
   );

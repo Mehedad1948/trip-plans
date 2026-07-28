@@ -3,21 +3,15 @@ import { SubmitButton } from "@/components/submit-button";
 import type { TripMember, TripPlan } from "@/lib/types";
 import {
   createExpenseAction,
-  createMessageAction,
   createPackingAction,
-  deleteExpenseAction,
   deletePackingAction,
   togglePackingAction,
   updatePackingAction,
 } from "./actions";
+import { ChatThread } from "./chat-thread";
+import { ExpenseDeleteDialog } from "./expense-delete-dialog";
 
 const moneyFormatter = new Intl.NumberFormat("fa-IR");
-const dateFormatter = new Intl.DateTimeFormat("fa-IR", {
-  month: "short",
-  day: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-});
 
 function initials(name: string) {
   return name
@@ -117,7 +111,7 @@ function TeamSwitcher({
                         }`}
                       >
                         {isActive
-                          ? "حساب فعال شما"
+                          ? "شما"
                           : member.role === "organizer"
                             ? "برنامه‌ریز سفر"
                             : "هم‌سفر"}
@@ -411,11 +405,16 @@ function ExpenseBoard({
               همان لحظه ببینید.
             </p>
           </div>
-          <div className="rounded-2xl border border-black/[0.06] bg-white px-5 py-3 text-left shadow-sm">
-            <span className="block text-[10px] text-[#6B7190]">جمع هزینه‌ها</span>
-            <strong className="mt-1 block text-xl text-[#424874]" dir="ltr">
+          <div className="w-full rounded-3xl border border-black/[0.06] bg-white px-7 py-5 text-left shadow-sm sm:w-auto sm:min-w-64">
+            <span className="block text-sm font-medium text-[#6B7190]">
+              جمع هزینه‌ها
+            </span>
+            <strong
+              className="mt-2 block text-3xl font-bold text-[#424874] sm:text-4xl"
+              dir="ltr"
+            >
               {moneyFormatter.format(total)}{" "}
-              <small className="text-xs font-normal">تومان</small>
+              <small className="text-sm font-normal">تومان</small>
             </strong>
           </div>
         </div>
@@ -527,17 +526,12 @@ function ExpenseBoard({
                           {moneyFormatter.format(expense.amount)} تومان
                         </strong>
                         {expense.recordedBy.id === activeMember.id && (
-                          <form action={deleteExpenseAction}>
-                            <HiddenContext plan={plan} />
-                            <input
-                              type="hidden"
-                              name="expenseId"
-                              value={expense.id}
-                            />
-                            <SubmitButton className="rounded-lg px-2 py-1 text-[10px] text-[#a2513c] hover:bg-[#faeee9]">
-                              حذف
-                            </SubmitButton>
-                          </form>
+                          <ExpenseDeleteDialog
+                            tripSlug={plan.slug}
+                            expenseId={expense.id}
+                            description={expense.description}
+                            amountLabel={`${moneyFormatter.format(expense.amount)} تومان`}
+                          />
                         )}
                       </div>
                     </article>
@@ -732,81 +726,12 @@ export function ChatPanel({
                 <Icon name="chat" className="size-5" />
               </span>
           </div>
-          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain">
-            {plan.messages.length ? (
-              plan.messages.map((message) => {
-                const mine = message.author.id === activeMember.id;
-                return (
-                  <article
-                    key={message.id}
-                    className={`flex items-end gap-2 ${
-                      mine ? "justify-start" : "justify-end"
-                    }`}
-                  >
-                    {mine && <Avatar member={message.author} size="small" />}
-                    <div
-                      className={`max-w-[82%] rounded-2xl px-4 py-3 ${
-                        mine
-                          ? "rounded-br-md bg-[#424874] text-white"
-                          : "rounded-bl-md bg-[#F4EEFF] text-[#424874]"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-5">
-                        <strong className="text-[10px]">
-                          {message.author.displayName}
-                        </strong>
-                        <time className="text-[9px] opacity-45" dir="ltr">
-                          {dateFormatter.format(
-                            new Date(message.createdAt.replace(" ", "T") + "Z"),
-                          )}
-                        </time>
-                      </div>
-                      <p className="mt-1 text-sm leading-7">{message.body}</p>
-                    </div>
-                    {!mine && <Avatar member={message.author} size="small" />}
-                  </article>
-                );
-              })
-            ) : (
-              <div className="flex min-h-64 flex-col items-center justify-center text-center">
-                <Icon name="chat" className="size-8 text-[#A6B1E1]" />
-                <p className="mt-3 text-sm font-semibold text-[#6B7190]">
-                  هنوز پیامی نیست
-                </p>
-                <p className="mt-1 text-xs text-[#8589A8]">
-                  اولین هماهنگی سفر را شما بنویسید.
-                </p>
-              </div>
-            )}
-          </div>
-
-          <form
-            action={createMessageAction}
-            className="mt-6 flex items-end gap-2 border-t border-[#DCD6F7] pt-5"
-          >
-            <HiddenContext plan={plan} />
-            <input type="hidden" name="view" value={view} />
-            <label className="min-w-0 flex-1">
-              <span className="sr-only">
-                پیام جدید از طرف {activeMember.displayName}
-              </span>
-              <textarea
-                name="body"
-                required
-                maxLength={1000}
-                rows={2}
-                placeholder={`پیام ${activeMember.displayName}…`}
-                className="min-h-12 w-full resize-none rounded-2xl border border-[#DCD6F7] bg-[#F4EEFF] px-4 py-3 text-sm leading-6 text-[#424874] outline-none transition-shadow placeholder:text-[#8589A8] focus:border-[#A6B1E1] focus:ring-4 focus:ring-[#DCD6F7]"
-              />
-            </label>
-            <SubmitButton
-              aria-label="ارسال پیام"
-              className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#424874] text-white outline-none transition-transform active:scale-[0.95] disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[#424874]"
-              pendingLabel="…"
-            >
-              <Icon name="send" className="size-5" />
-            </SubmitButton>
-          </form>
+          <ChatThread
+            messages={plan.messages}
+            activeMember={activeMember}
+            tripSlug={plan.slug}
+            view={view}
+          />
         </div>
       </div>
     </section>

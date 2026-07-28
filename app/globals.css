@@ -49,12 +49,23 @@ input {
   color: #424874;
 }
 
-@keyframes scrim-in {
+@keyframes chat-scrim-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes sheet-in {
+@keyframes chat-sheet-in-mobile {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chat-sheet-in-desktop {
   from {
     opacity: 0;
     transform: translateX(-1.5rem) scale(0.985);
@@ -63,6 +74,62 @@ input {
     opacity: 1;
     transform: translateX(0) scale(1);
   }
+}
+
+@keyframes chat-content-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-overlay-scrim {
+  animation: chat-scrim-in 180ms ease-out both;
+}
+
+.chat-overlay-panel {
+  animation: chat-sheet-in-mobile 300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: bottom center;
+  will-change: transform, opacity;
+}
+
+.chat-overlay-content {
+  animation: chat-content-in 240ms 60ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (min-width: 40rem) {
+  .chat-overlay-panel {
+    animation-name: chat-sheet-in-desktop;
+    transform-origin: bottom left;
+  }
+}
+
+@keyframes expense-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes expense-dialog-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.expense-delete-dialog[open] {
+  animation: expense-dialog-in 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.expense-delete-dialog[open]::backdrop {
+  animation: expense-dialog-backdrop-in 160ms ease-out;
 }
 
 .nav-link {
