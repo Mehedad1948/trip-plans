@@ -12,7 +12,7 @@ type StoredSubscription = {
 
 type PushPayload = {
   tripSlug: string;
-  excludeMemberId: number;
+  excludeUserId: number;
   title: string;
   body: string;
   url: string;
@@ -93,8 +93,8 @@ export async function sendTripPushNotifications(payload: PushPayload) {
           JOIN users ON users.id = push_subscriptions.user_id
           JOIN trip_members ON trip_members.user_id = users.id
           JOIN trips ON trips.id = trip_members.trip_id
-          WHERE trips.slug = ? AND trip_members.id <> ?`,
-    args: [payload.tripSlug, payload.excludeMemberId],
+          WHERE trips.slug = ? AND users.id <> ?`,
+    args: [payload.tripSlug, payload.excludeUserId],
   });
   const subscriptions: StoredSubscription[] = result.rows.map((row) => ({
     endpoint: String(row.endpoint),

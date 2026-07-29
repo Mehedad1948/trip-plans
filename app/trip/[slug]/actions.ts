@@ -113,7 +113,7 @@ export async function createMessageAction(formData: FormData) {
   );
   await notifyTrip({
     tripSlug: slug,
-    excludeMemberId: member.id,
+    excludeUserId: member.userId,
     title: "پیام جدید سفر",
     body: `${member.displayName}: ${body.slice(0, 140)}`,
     url: `/trip/${slug}?panel=chat`,
@@ -142,7 +142,7 @@ export async function createExpenseAction(formData: FormData) {
   });
   await notifyTrip({
     tripSlug: slug,
-    excludeMemberId: member.id,
+    excludeUserId: member.userId,
     title: "هزینه جدید سفر",
     body: `${member.displayName} هزینه «${expense.description}» را ثبت کرد.`,
     url: `/trip/${slug}#expenses`,
