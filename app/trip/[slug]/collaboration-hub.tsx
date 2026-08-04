@@ -533,7 +533,7 @@ function ExpenseBoard({
                                   .join("، ")}
                               </dd>
                             </div>
-                            {expense.recordedBy.id !== expense.payer.id && (
+                            {expense.recordedBy.slug !== "mehrdad" && (
                               <div className="flex items-start gap-2">
                                 <dt className="w-16 shrink-0 text-[#8589A8]">
                                   ثبت توسط
