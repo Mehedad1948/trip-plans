@@ -9,7 +9,7 @@ import {
   updatePackingAction,
 } from "./actions";
 import { ChatThread } from "./chat-thread";
-import { ExpenseDeleteDialog } from "./expense-delete-dialog";
+import { ExpenseDetails } from "./expense-details";
 
 const moneyFormatter = new Intl.NumberFormat("fa-IR");
 
@@ -526,75 +526,11 @@ function ExpenseBoard({
               )}
             </div>
 
-            <div className="rounded-[1.75rem] border border-black/[0.06] bg-white p-5 sm:p-6">
-              <h3 className="font-bold text-[#424874]">ریز هزینه‌ها</h3>
-              {plan.expenses.length ? (
-                <div className="mt-4 divide-y divide-[#DCD6F7]">
-                  {plan.expenses.map((expense) => (
-                    <article
-                      key={expense.id}
-                      className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div className="flex items-start gap-3">
-                        <Avatar member={expense.payer} size="small" />
-                        <div className="min-w-0">
-                          <h4 className="text-sm font-bold text-[#424874]">
-                            {expense.description}
-                          </h4>
-                          <dl className="mt-2 space-y-1.5 text-[11px] leading-5">
-                            <div className="flex items-start gap-2">
-                              <dt className="w-16 shrink-0 text-[#8589A8]">
-                                پرداخت توسط
-                              </dt>
-                              <dd className="font-medium text-[#5F6485]">
-                                {expense.payer.displayName}
-                              </dd>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <dt className="w-16 shrink-0 text-[#8589A8]">
-                                تقسیم بین
-                              </dt>
-                              <dd className="text-[#5F6485]">
-                                {expense.participants
-                                  .map((item) => item.displayName)
-                                  .join("، ")}
-                              </dd>
-                            </div>
-                            {expense.recordedBy.slug !== "mehrdad" && (
-                              <div className="flex items-start gap-2">
-                                <dt className="w-16 shrink-0 text-[#8589A8]">
-                                  ثبت توسط
-                                </dt>
-                                <dd className="text-[#5F6485]">
-                                  {expense.recordedBy.displayName}
-                                </dd>
-                              </div>
-                            )}
-                          </dl>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between gap-3 sm:justify-end">
-                        <strong className="text-sm text-[#424874]" dir="ltr">
-                          {moneyFormatter.format(expense.amount)} تومان
-                        </strong>
-                        {expense.recordedBy.id === activeMember.id && (
-                          <ExpenseDeleteDialog
-                            tripSlug={plan.slug}
-                            expenseId={expense.id}
-                            description={expense.description}
-                            amountLabel={`${moneyFormatter.format(expense.amount)} تومان`}
-                          />
-                        )}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-3 text-sm text-[#6B7190]">
-                  هنوز هزینه‌ای برای این سفر ثبت نشده است.
-                </p>
-              )}
-            </div>
+            <ExpenseDetails
+              expenses={plan.expenses}
+              activeMember={activeMember}
+              tripSlug={plan.slug}
+            />
           </div>
 
           <form
