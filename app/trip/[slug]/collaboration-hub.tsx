@@ -390,6 +390,19 @@ function ExpenseBoard({
   activeMember: TripMember;
 }) {
   const total = plan.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+  const activeMemberShare = plan.expenses.reduce(
+    (sum, expense) =>
+      sum +
+      expense.participants.reduce(
+        (expenseSum, participant) =>
+          expenseSum +
+          (participant.memberId === activeMember.id
+            ? participant.shareAmount
+            : 0),
+        0,
+      ),
+    0,
+  );
 
   return (
     <section id="expenses" className="bg-white py-20 sm:py-28">
@@ -408,17 +421,31 @@ function ExpenseBoard({
               همان لحظه ببینید.
             </p>
           </div>
-          <div className="w-full rounded-3xl border border-black/[0.06] bg-white px-7 py-5 text-left shadow-sm sm:w-auto sm:min-w-64">
-            <span className="block text-sm font-medium text-[#6B7190]">
-              جمع هزینه‌ها
-            </span>
-            <strong
-              className="mt-2 block text-3xl font-bold text-[#424874] sm:text-4xl"
-              dir="ltr"
-            >
-              {moneyFormatter.format(total)}{" "}
-              <small className="text-sm font-normal">تومان</small>
-            </strong>
+          <div className="grid w-full gap-3 sm:w-auto sm:grid-cols-2">
+            <div className="rounded-3xl border border-black/[0.06] bg-white px-7 py-5 text-left shadow-sm sm:min-w-64">
+              <span className="block text-sm font-medium text-[#6B7190]">
+                جمع هزینه‌ها
+              </span>
+              <strong
+                className="mt-2 block text-3xl font-bold text-[#424874] sm:text-4xl"
+                dir="ltr"
+              >
+                {moneyFormatter.format(total)}{" "}
+                <small className="text-sm font-normal">تومان</small>
+              </strong>
+            </div>
+            <div className="rounded-3xl border border-[#DCD6F7] bg-[#F7F7FC] px-7 py-5 text-left shadow-sm sm:min-w-64">
+              <span className="block text-sm font-medium text-[#6B7190]">
+                سهم شما از هزینه‌ها
+              </span>
+              <strong
+                className="mt-2 block text-3xl font-bold text-[#424874] sm:text-4xl"
+                dir="ltr"
+              >
+                {moneyFormatter.format(activeMemberShare)}{" "}
+                <small className="text-sm font-normal">تومان</small>
+              </strong>
+            </div>
           </div>
         </div>
 
