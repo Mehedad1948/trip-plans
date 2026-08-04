@@ -530,6 +530,7 @@ function ExpenseBoard({
               expenses={plan.expenses}
               activeMember={activeMember}
               tripSlug={plan.slug}
+              memberCount={plan.members.length}
             />
           </div>
 

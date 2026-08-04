@@ -31,10 +31,12 @@ export function ExpenseDetails({
   expenses,
   activeMember,
   tripSlug,
+  memberCount,
 }: {
   expenses: Expense[];
   activeMember: TripMember;
   tripSlug: string;
+  memberCount: number;
 }) {
   const [payerId, setPayerId] = useState<number | null>(null);
   const payers = Array.from(
@@ -113,9 +115,11 @@ export function ExpenseDetails({
                           تقسیم بین
                         </dt>
                         <dd className="text-[#5F6485]">
-                          {expense.participants
-                            .map((item) => item.displayName)
-                            .join("، ")}
+                          {expense.participants.length === memberCount
+                            ? "همه"
+                            : expense.participants
+                                .map((item) => item.displayName)
+                                .join("، ")}
                         </dd>
                       </div>
                       {expense.recordedBy.slug !== "mehrdad" && (
