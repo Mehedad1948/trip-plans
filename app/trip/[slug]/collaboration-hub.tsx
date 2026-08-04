@@ -508,20 +508,42 @@ function ExpenseBoard({
                       key={expense.id}
                       className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-start gap-3">
                         <Avatar member={expense.payer} size="small" />
-                        <div>
+                        <div className="min-w-0">
                           <h4 className="text-sm font-bold text-[#424874]">
                             {expense.description}
                           </h4>
-                          <p className="mt-1 text-[10px] text-[#8589A8]">
-                            پرداخت توسط {expense.payer.displayName} ·{" "}
-                            {expense.participants
-                              .map((item) => item.displayName)
-                              .join("، ")}
-                            {expense.recordedBy.id !== expense.payer.id &&
-                              ` · ثبت توسط ${expense.recordedBy.displayName}`}
-                          </p>
+                          <dl className="mt-2 space-y-1.5 text-[11px] leading-5">
+                            <div className="flex items-start gap-2">
+                              <dt className="w-16 shrink-0 text-[#8589A8]">
+                                پرداخت توسط
+                              </dt>
+                              <dd className="font-medium text-[#5F6485]">
+                                {expense.payer.displayName}
+                              </dd>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <dt className="w-16 shrink-0 text-[#8589A8]">
+                                تقسیم بین
+                              </dt>
+                              <dd className="text-[#5F6485]">
+                                {expense.participants
+                                  .map((item) => item.displayName)
+                                  .join("، ")}
+                              </dd>
+                            </div>
+                            {expense.recordedBy.id !== expense.payer.id && (
+                              <div className="flex items-start gap-2">
+                                <dt className="w-16 shrink-0 text-[#8589A8]">
+                                  ثبت توسط
+                                </dt>
+                                <dd className="text-[#5F6485]">
+                                  {expense.recordedBy.displayName}
+                                </dd>
+                              </div>
+                            )}
+                          </dl>
                         </div>
                       </div>
                       <div className="flex items-center justify-between gap-3 sm:justify-end">
